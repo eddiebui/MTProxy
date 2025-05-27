@@ -89,6 +89,10 @@ int aes_crypto_init (connection_job_t c, void *key_data, int key_data_len) {
   T->read_aeskey = evp_cipher_ctx_init (EVP_aes_256_cbc(), D->read_key, D->read_iv, 0);
   T->write_aeskey = evp_cipher_ctx_init (EVP_aes_256_cbc(), D->write_key, D->write_iv, 1);
   CONN_INFO(c)->crypto = T;
+  
+  // increase number of connections using secret
+  main_secret.active_connections++;
+
   return 0;
 }
 
@@ -116,6 +120,8 @@ int aes_crypto_free (connection_job_t c) {
     free (crypto);
     CONN_INFO(c)->crypto = 0;
     MODULE_STAT->allocated_aes_crypto --;
+    // decrease number of connections using secret
+    main_secret.active_connections--;
   }
   if (CONN_INFO(c)->crypto_temp) {
     free (CONN_INFO(c)->crypto_temp);
