@@ -574,6 +574,10 @@ int tcp_rpcs_init_crypto (connection_job_t C, struct tcp_rpc_nonce_packet *P) {
   }
 
   aes_secret_t *secret = &main_secret;
+  // check number of connections using secret
+  if (secret->active_connections >= 1) {
+    return -1; // reject new connection if there is already a connection using the secret
+  }
 
   union {
     struct tcp_rpc_nonce_packet s;

@@ -50,6 +50,7 @@ void fetch_aes_crypto_stat (int *allocated_aes_crypto_ptr, int *allocated_aes_cr
 typedef struct aes_secret {
   int refcnt;
   int secret_len;
+  int active_connections;
   union {
     char secret[MAX_PWD_LEN+4];
     int key_signature;
